@@ -1,0 +1,60 @@
+name: Make download count badges from App Store
+
+on:
+  schedule:
+    - cron: '0 3 3 * *' # Run at 3:00 AM on the 3rd of every month
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+    - name: Create config.yml
+      env:
+        CONFIG_YML: ${{ secrets.CONFIG_YML }}
+      run: echo "$CONFIG_YML" > config.yml
+    
+    - name: Create private key
+      env:
+        PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+      run: echo "$PRIVATE_KEY" > private.p8
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        pip install -U pip
+        pip install pipx
+        pipx install app-store-download-count-badge-maker
+
+    - name: Generate badges
+      run: app-store-download-count-badge-maker
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v5
+
+    - name: Upload artifacts
+      uses: actions/upload-pages-artifact@v3
+      with:
+        name: './dist'
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
