@@ -2,7 +2,7 @@ name: Make download count badges from App Store
 
 on:
   schedule:
-    - cron: '0 3 3 * *' # Run at 3:00 AM on the 3rd of every month
+    - cron: '0 3 4 * *' # Run at 3:00 AM on the 4th of every month
   workflow_dispatch:
 
 permissions:
