@@ -51,7 +51,7 @@ jobs:
         ls dist/
 
     - name: Create index.html
-      run: python make_index.py
+      run: app-store-download-count-badge-maker make-index
 
     - name: Setup Pages
       uses: actions/configure-pages@v5
