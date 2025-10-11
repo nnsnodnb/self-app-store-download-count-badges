@@ -1,1 +1,1 @@
-app-store-download-count-badge-maker==0.3.0
+app-store-download-count-badge-maker==0.4.0
